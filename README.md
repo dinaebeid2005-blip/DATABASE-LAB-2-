@@ -236,7 +236,7 @@ The `.env` file should be excluded from Git to protect database credentials and 
 
 # 7. Screenshots
 
-The following screenshots illustrate the main pages and functionality of the StudyTrack application.
+The required screenshots are stored inside the screenshots/ folder and illustrate the main pages and functionality.
 
 ## Registration Page and Validation
 
