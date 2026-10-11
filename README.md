@@ -141,77 +141,95 @@ python app.py
 
 Open the local address displayed in the terminal in your browser to access the application.
 
-6. Features Implemented
-   
-### R1 — Account Creation
+# 6. Features Implemented
+
+## R1 — Account Creation
 
 The system allows new users to register by entering their name, email address, password, and password confirmation.
 
 Before creating an account, the application checks that all required information has been provided. Passwords are hashed using bcrypt before they are saved in the database.
 
-### R2 — Registration Error Handling
+---
+
+## R2 — Registration Error Handling
 
 The registration process includes validation to prevent incomplete or invalid account creation. The system checks for missing fields, mismatched passwords, and email addresses that are already registered.
 
-If an email address is already in use, the application informs the user with the message:
+If an email address is already in use, the application displays the message:
 
 `Email Already Exists`
 
-### R3 — User Authentication
+---
+
+## R3 — User Authentication
 
 Existing users can access their accounts by entering their email address and password.
 
-The application retrieves the user's stored password hash and uses bcrypt to verify the entered password. If the login information is incorrect, the system displays the following message:
+The application retrieves the stored password hash and uses bcrypt to verify the entered password. If the login information is incorrect, the system displays the following message:
 
 `Invalid email or password`
 
-This message appears whether the email is not registered or the password is incorrect.
+This message is used whether the email is not registered or the password is incorrect.
 
-### R4 — Session Handling
+---
 
-Once a user successfully logs in or registers, the application saves their user ID and name in the session. The user ID stored in the session is then used to identify the authenticated user when accessing protected features.
+## R4 — Session Handling
+
+After a successful login or registration, the application stores the user's ID and name in the session. The user ID is then used to identify the authenticated user when accessing protected features.
 
 The logout function clears the session and redirects the user to the login page.
 
-### R5 — Personal To-Do List
+---
 
-After authentication, users can access their own task list. The application retrieves tasks from the database according to the user ID stored in the session.
+## R5 — Personal To-Do List
 
-This ownership-based filtering helps prevent users from viewing tasks belonging to other accounts.
+After logging in, users can access their own task lists. The application retrieves tasks from the database using the user ID stored in the session.
 
-### R6 — Creating Tasks
+This filtering helps prevent users from viewing tasks that belong to other accounts.
 
-Users can add new tasks through the to-do page. The application checks that the task title is not blank and does not exceed 200 characters.
+---
 
-When a task is created, it is linked to the ID of the currently authenticated user.
+## R6 — Creating Tasks
 
-### R7 — Updating Tasks
+Users can add new tasks through the to-do page. The application checks that the task title is not empty and does not exceed 200 characters.
 
-Users can modify the titles of their existing tasks and change their completion status.
+Each new task is associated with the ID of the currently logged-in user.
 
-Before applying an update, the database query checks both the task ID and the authenticated user's ID. This ensures that the update applies only to a task owned by that user.
+---
 
-### R8 — Task Completion
+## R7 — Updating Tasks
 
-The application allows users to mark tasks as completed or reopen them by changing the completion checkbox.
+Users can edit the titles of their tasks and change their completion status.
 
-The task's status is stored in the database in the `is_done` field, allowing the application to retrieve its current state later.
+Before updating a task, the database query checks both the task ID and the authenticated user's ID. This ensures that users can modify only their own tasks.
 
-### R9 — Removing Tasks
+---
 
-Users can delete tasks from their personal lists. The deletion query checks both the task ID and the user's ID before removing a record.
+## R8 — Task Completion
 
-This ownership check prevents a user from deleting a task belonging to another account through the application's normal task-management route.
+Users can mark tasks as completed or change them back to incomplete using the completion checkbox.
 
-### R10 — Security and Input Checks
+The task's status is stored in the database in the `is_done` field, allowing the application to retrieve the current status later.
 
-Several security and validation techniques are used in the application:
+---
+
+## R9 — Removing Tasks
+
+Users can delete tasks from their personal lists. The deletion query checks both the task ID and the user's ID before removing the record.
+
+This ownership check prevents users from deleting tasks belonging to other accounts through the application's normal task-management route.
+
+---
+
+## R10 — Security and Input Validation
+
+The application uses several security measures and validation techniques:
 
 - **Password protection:** bcrypt hashes passwords before they are stored.
 - **SQL injection prevention:** parameterized SQL queries are used for database operations.
-- **Authentication:** sessions are used to identify logged-in users.
-- **Access control:** task updates and deletions check task ownership.
-- **Input validation:** required fields and task-title length are checked on the server.
-- **Configuration management:** environment variables are used to load database credentials and the Flask session secret.
+- **Session authentication:** sessions identify users who have logged in.
+- **Access control:** task updates and deletions verify task ownership.
+- **Input validation:** the application checks required fields and task-title length on the server.
+- **Configuration management:** environment variables store database connection settings and the Flask session secret.
 
-The `.env` file should be excluded from Git so that database credentials and the session secret are not exposed in the repository.
+The `.env` file should be excluded from Git to protect database credentials and other sensitive configuration values.
