@@ -300,3 +300,143 @@ Its fields include:
 
 The `user_id` field connects each task to its owner in the `users` table. The application uses this relationship to retrieve each user's tasks and to restrict task updates and deletions to the appropriate account.
 
+# 9. Required Questions
+
+## (a) Why are UPDATE and DELETE queries written with `AND user_id =` ?
+
+The condition `AND user_id = `? checks that the task belongs to the user performing the operation.
+
+The application obtains the user's ID from the authenticated session and includes it in the database query. This prevents a user from modifying or deleting another user's task simply by knowing its task ID.
+
+Therefore, checking task ownership provides an additional layer of security.
+
+## (b) What happens when a todo is inserted with a `user_id` that does not exist?
+
+If the `todos.user_id` column has a foreign key referencing `users.user_id`, the database rejects an insertion that refers to a nonexistent user.
+
+This rule ensures that every task is associated with a valid user account. It is an example of **referential integrity enforced through a foreign key constraint**.
+
+## (c) Why does the application store password hashes instead of passwords?
+
+Storing passwords as plain text would expose users' credentials if someone gained access to the database.
+
+To avoid this, the application uses bcrypt to generate a password hash and stores that hash instead of the original password. During login, bcrypt verifies the entered password against the stored hash.
+
+This approach improves the protection of users' credentials.
+
+## (d) Why must the application check for an empty name if the database column is NOT NULL?
+
+The `NOT NULL` constraint prevents a column from containing a SQL `NULL` value, but it does not prevent an empty string from being stored.
+
+For example, `""` is an empty string rather than a `NULL` value.
+
+The application therefore checks that the name contains actual input before attempting to create the account. This improves data quality and helps users correct incomplete forms.
+
+---
+
+# 10. SQL Queries and Security
+
+The application uses parameterized SQL statements when communicating with the MySQL database.
+
+For example, the login process retrieves the user's information using a parameterized query:
+
+```python
+cursor.execute(
+    "SELECT user_id, name, password_hash FROM users WHERE email = %s;",
+    (email,)
+)
+```
+
+The email address is passed separately from the SQL statement. This helps prevent user input from being interpreted as part of the SQL command.
+
+The application also uses the authenticated user's ID from the session when retrieving and managing tasks. Together, these practices help protect database operations and restrict access to user-owned data.
+
+---
+
+# 11. User and Task Ownership
+
+The database connects each task to its owner through the `user_id` field in the `todos` table.
+
+The relationship can be represented as follows:
+
+`todos.user_id → users.user_id`
+
+When a user opens the to-do page, the application retrieves tasks associated with their session ID. The update and delete operations also check the task ID and user ID before making changes.
+
+These checks help ensure that each user can manage their own tasks without accessing another user's records through the normal application routes.
+
+---
+
+# 12. Validation and Testing
+
+The following test cases can be used to evaluate the application's main functions.
+
+## Registration Tests
+
+- Submit the form with an empty name.
+- Submit the form with an empty email address.
+- Submit the form without a password.
+- Leave the password confirmation field empty.
+- Enter different passwords in the password fields.
+- Attempt to register with an existing email address.
+- Register successfully using valid information.
+
+## Login Tests
+
+- Submit the form without an email address.
+- Submit the form without a password.
+- Enter an email address that is not registered.
+- Enter an incorrect password.
+- Log in using valid credentials.
+- Test whether SQL injection input is handled safely.
+
+## To-Do Management Tests
+
+- Add a new task.
+- Change the title of an existing task.
+- Mark a task as completed.
+- Delete a task.
+- Verify that each user sees only their own tasks.
+- Verify that a user cannot update or delete another user's task.
+
+These are the test cases for the application. Only describe them as successfully passed if you have actually performed the corresponding tests.
+
+---
+
+# 13. Environment Configuration
+
+The application uses environment variables to separate configuration settings from the Python source code.
+
+The `.env.example` file provides a template showing the required configuration variables, while the actual `.env` file contains the local values used to connect to the database and configure the Flask application.
+
+The `.env` file should be excluded from version control through `.gitignore`. This helps prevent database credentials and the Flask session secret from being exposed in the GitHub repository.
+
+---
+
+# 14. Bonus Features
+
+The application includes additional interface improvements beyond the basic registration and login functionality.
+
+Counting how many to-dos are open and a due date for each to-do( a new column)
+
+The to-do page displays separate summaries for open tasks and completed tasks. Completed tasks are also visually distinguished from unfinished tasks, making the list easier to read and manage.
+
+The interface uses custom styling, including a background image, styled buttons, and a consistent design across the registration, login, and to-do pages. 
+
+<img width="955" height="291" alt="image" src="https://github.com/user-attachments/assets/f57e3f8e-4a4a-4fd4-a963-407fa5585548" />
+
+<img width="1280" height="682" alt="image" src="https://github.com/user-attachments/assets/60549339-cc93-4629-9557-4c00c80ebffe" />
+
+
+
+---
+
+# 15. Conclusion
+
+The project implements a task-management web application using Flask, MySQL, HTML, and CSS. It combines account registration, user authentication, session handling, and task-management operations in one application.
+
+The system also incorporates password hashing, parameterized database queries, input validation, and user-ownership checks to improve security and data integrity.
+
+The additional interface styling and task summaries make the application more organized and user-friendly.
+
+
