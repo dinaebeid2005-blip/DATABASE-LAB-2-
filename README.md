@@ -233,3 +233,70 @@ The application uses several security measures and validation techniques:
 - **Configuration management:** environment variables store database connection settings and the Flask session secret.
 
 The `.env` file should be excluded from Git to protect database credentials and other sensitive configuration values.
+
+# 7. Screenshots
+
+The following screenshots illustrate the main pages and functionality of the StudyTrack application.
+
+## Registration Page and Validation
+
+This screenshot presents the account registration form, where users enter their personal information. It also demonstrates the validation message displayed when required information is missing.
+
+<img width="1280" height="679" alt="image" src="https://github.com/user-attachments/assets/2951b54f-a971-4cbf-8ae2-8a5be6d59eb3" />
+
+
+## Login Page
+
+This image shows the login interface. Registered users can enter their email address and password to access their accounts.
+
+<img width="1280" height="664" alt="image" src="https://github.com/user-attachments/assets/3a547db0-7034-4366-9226-19126c3e891b" />
+
+
+## To-Do List with a Completed Task
+
+This screenshot demonstrates the task management page. Users can add tasks, edit their titles, mark tasks as completed, and delete tasks. The completed task is visually distinguished from tasks that are still open.
+
+<img width="1280" height="682" alt="image" src="https://github.com/user-attachments/assets/fe964c1f-155f-4f4d-a906-0eb4b29d7524" />
+
+
+## Mobile-Sized Layout
+
+This screenshot illustrates the appearance of the application in a smaller, phone-sized window. It helps demonstrate how the interface adjusts to a narrower display.
+
+<img width="1280" height="676" alt="image" src="https://github.com/user-attachments/assets/602e8527-50c0-4ff1-bd94-ffca494579c7" />
+
+
+---
+
+# 8. Database Design
+
+The StudyTrack application uses two main database tables to manage user accounts and their tasks.
+
+## Users Table
+
+The `users` table contains the information required to identify registered users and authenticate them.
+
+Its fields include:
+
+- `user_id` — identifies each user.
+- `name` — stores the user's name.
+- `email` — stores the user's email address.
+- `password_hash` — stores the hashed password.
+- `registration_date` — stores the registration date, if this field exists in the database schema.
+
+The email address is intended to be unique so that the same email cannot be used to create multiple accounts.
+
+## Todos Table
+
+The `todos` table stores the tasks created by users.
+
+Its fields include:
+
+- `todo_id` — identifies each task.
+- `user_id` — identifies the user who owns the task.
+- `title` — contains the task description.
+- `is_done` — indicates whether the task has been completed.
+- `created_at` — records when the task was created.
+
+The `user_id` field connects each task to its owner in the `users` table. The application uses this relationship to retrieve each user's tasks and to restrict task updates and deletions to the appropriate account.
+
